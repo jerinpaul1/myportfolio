@@ -33,6 +33,10 @@ nav {
   top: 0;
   z-index: 100;
 }
+body.light nav {
+  background-color: #ffffff;
+  border-bottom: 1px solid #ddd;
+}
 
 .logo-link {
   display: flex;
@@ -65,10 +69,20 @@ nav {
   border: none;
   cursor: pointer;
 }
+body.light .nav-links a,
+.theme-btn {
+  color: #0f0f0f;
+  background-color: #e0e0e0;
+}
 
 .nav-links a:hover,
 .theme-btn:hover {
   background-color: var(--link-hover);
+}
+body.light .nav-links a:hover,
+.theme-btn:hover {
+  background-color: #cfcfcf;
+  color: #007777;
 }
 
 /* Right-aligned container for nav links and hamburger */
