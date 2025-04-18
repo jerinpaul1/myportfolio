@@ -136,3 +136,99 @@ body.light .theme-btn:hover {
 main {
   padding: 2rem;
 }
+/* ===== Sections ===== */
+.hero,
+.content,
+.projects,
+.contact {
+  max-width: 800px;
+  margin: auto;
+  padding: 4rem 2rem;
+  text-align: center;
+}
+
+/* ===== Project Grid ===== */
+.project-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 2rem;
+  margin-top: 2rem;
+}
+
+.project-card {
+  background: #1a1a1a;
+  padding: 1rem;
+  border-radius: 10px;
+  transition: transform 0.3s, background 0.3s;
+  text-align: left;
+}
+
+body.light .project-card {
+  background: #ffffff;
+  border: 1px solid #ddd;
+}
+
+.project-card:hover {
+  transform: translateY(-5px);
+}
+
+.project-card img {
+  width: 100%;
+  border-radius: 6px;
+  margin-bottom: 1rem;
+}
+
+/* ===== Contact Form ===== */
+form {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  max-width: 500px;
+  margin: auto;
+}
+
+input,
+textarea {
+  padding: 0.75rem;
+  border: none;
+  border-radius: 5px;
+  background-color: #222;
+  color: #f5f5f5;
+}
+
+body.light input,
+body.light textarea {
+  background-color: #f0f0f0;
+  color: #0f0f0f;
+}
+
+button[type="submit"] {
+  padding: 0.75rem;
+  background-color: #00ffcc;
+  border: none;
+  border-radius: 5px;
+  color: #0f0f0f;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+button[type="submit"]:hover {
+  background-color: #00ddb5;
+}
+
+/* ===== Fade In Animation ===== */
+.fade-in {
+  opacity: 0;
+  animation: fadeIn 1s ease-in-out forwards;
+}
+
+.fade-in.delay {
+  animation-delay: 0.5s;
+}
+
+@keyframes fadeIn {
+  to {
+    opacity: 1;
+  }
+}
