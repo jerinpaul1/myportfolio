@@ -28,6 +28,9 @@ nav {
   align-items: center;
   padding: 1rem 2rem;
   background-color: #121212;
+  position: sticky;
+  top: 0;
+  z-index: 100;
 }
 
 body.light nav {
@@ -38,6 +41,7 @@ body.light nav {
 .logo-link {
   display: flex;
   align-items: center;
+  flex-shrink: 0;
 }
 
 .logo {
@@ -51,6 +55,8 @@ body.light nav {
 .nav-links {
   display: flex;
   gap: 1rem;
+  align-items: center;
+  margin-left: auto;
 }
 
 .nav-links a {
