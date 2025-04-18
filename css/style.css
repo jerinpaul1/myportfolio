@@ -179,7 +179,6 @@ body.light .theme-btn:hover {
   body.light .nav-links a,
 body.light .theme-btn {
   background-color: var(--nav-bg);
-  color: black;
 }
 
   body.light .nav-links {
