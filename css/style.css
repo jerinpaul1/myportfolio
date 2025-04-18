@@ -91,10 +91,19 @@ body.light .nav-links a:hover {
   transition: background-color 0.3s;
 }
 
-
 .theme-btn:hover {
   background-color: #1a1a1a;
-}*/
+}
+
+body.light .theme-btn {
+  border-color: #007777;
+  color: #007777;
+}
+
+body.light .theme-btn:hover {
+  background-color: #e0e0e0;
+} 
+*/
 
 /* Make theme toggle button look like nav links */
 .theme-btn {
@@ -113,14 +122,14 @@ body.light .nav-links a:hover {
   background-color: #444;
 }
 
-
 body.light .theme-btn {
-  border-color: #007777;
-  color: #007777;
+  color: #0f0f0f;
+  background-color: #e0e0e0;
 }
 
 body.light .theme-btn:hover {
-  background-color: #e0e0e0;
+  background-color: #cfcfcf;
+  color: #007777;
 }
 
 /* ===== Sections ===== */
