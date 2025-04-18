@@ -78,8 +78,46 @@ nav {
   margin-left: auto;
   gap: 10px;
 }
-/* Hamburger menu hidden on larger screens */
+/* Hamburger base */
 .hamburger {
+  display: none;
+  flex-direction: column;
+  justify-content: center;
+  gap: 4px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 10px;
+  z-index: 101;
+}
+
+.hamburger span {
+  width: 24px;
+  height: 2px;
+  background-color: white;
+  display: block;
+  transition: all 0.3s ease;
+  border-radius: 2px;
+}
+
+/* Light mode lines */
+body.light .hamburger span {
+  background-color: black;
+}
+
+/* Animate into an "X" */
+.hamburger.active span:nth-child(1) {
+  transform: rotate(45deg) translate(4px, 4px);
+}
+.hamburger.active span:nth-child(2) {
+  opacity: 0;
+}
+.hamburger.active span:nth-child(3) {
+  transform: rotate(-45deg) translate(4px, -4px);
+}
+
+/* Hamburger menu hidden on larger screens */
+/*.hamburger {
   display: none;
   font-size: 28px;
   background: none;
@@ -88,12 +126,13 @@ nav {
   cursor: pointer;
   padding: 8px;
   border-radius: 5px;
-}
+}*/
+
 
 /* Light mode adjustments */
-body.light nav {
+/*body.light nav {
   background-color: #e0e0e0;
-}
+}*/
 
 body.light .nav-links a,
 body.light .theme-btn {
