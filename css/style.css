@@ -1,0 +1,139 @@
+/* Root theme variables */
+:root {
+  --bg-dark: #121212;
+  --text-dark: #ffffff;
+  --bg-light: #f0f0f0;
+  --text-light: #000000;
+  --nav-bg: #1e1e1e;
+  --link-bg: #2a2a2a;
+  --link-hover: #444444;
+}
+
+/* Base styles */
+body {
+  margin: 0;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  background-color: var(--bg-dark);
+  color: var(--text-dark);
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+body.light {
+  background-color: var(--bg-light);
+  color: var(--text-light);
+}
+
+/* Navbar styles */
+nav {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 1rem 2rem;
+  background-color: var(--nav-bg);
+  position: sticky;
+  top: 0;
+  z-index: 100;
+}
+
+.logo-link {
+  display: flex;
+  align-items: center;
+  flex-shrink: 0;
+  width: 180px;
+}
+
+.logo {
+  max-width: 100%;
+  height: auto;
+}
+
+.nav-links {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-left: auto;
+}
+
+.nav-links a,
+.theme-btn {
+  background-color: var(--link-bg);
+  color: white;
+  text-decoration: none;
+  padding: 10px 15px;
+  border-radius: 5px;
+  transition: background-color 0.3s ease;
+  font-size: 1rem;
+  border: none;
+  cursor: pointer;
+}
+
+.nav-links a:hover,
+.theme-btn:hover {
+  background-color: var(--link-hover);
+}
+
+/* Hamburger menu hidden on larger screens */
+.hamburger {
+  display: none;
+  font-size: 28px;
+  background: none;
+  border: none;
+  color: white;
+  cursor: pointer;
+  margin-left: auto;
+}
+
+/* Light mode adjustments */
+body.light nav {
+  background-color: #e0e0e0;
+}
+
+body.light .nav-links a,
+body.light .theme-btn {
+  background-color: #d0d0d0;
+  color: black;
+}
+
+body.light .nav-links a:hover,
+body.light .theme-btn:hover {
+  background-color: #c0c0c0;
+}
+
+/* Responsive layout */
+@media (max-width: 768px) {
+  .hamburger {
+    display: block;
+  }
+
+  .nav-links {
+    position: absolute;
+    top: 70px;
+    right: 0;
+    background-color: var(--nav-bg);
+    flex-direction: column;
+    align-items: flex-start;
+    width: 100%;
+    padding: 1rem 2rem;
+    display: none;
+  }
+
+  .nav-links.show {
+    display: flex;
+  }
+
+  .nav-links a,
+  .theme-btn {
+    width: 100%;
+    text-align: left;
+    padding: 12px 0;
+  }
+
+  body.light .nav-links {
+    background-color: #e0e0e0;
+  }
+}
+
+/* Add spacing for page content */
+main {
+  padding: 2rem;
+}
