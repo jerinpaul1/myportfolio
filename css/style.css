@@ -130,24 +130,6 @@ body.light .hamburger span {
   transform: rotate(-45deg) translate(4px, -4px);
 }
 
-/* Hamburger menu hidden on larger screens */
-/*.hamburger {
-  display: none;
-  font-size: 28px;
-  background: none;
-  border: none;
-  color: white;
-  cursor: pointer;
-  padding: 8px;
-  border-radius: 5px;
-}*/
-
-
-/* Light mode adjustments */
-/*body.light nav {
-  background-color: #e0e0e0;
-}*/
-
 body.light .nav-links a,
 body.light .theme-btn {
   background-color: #d0d0d0;
@@ -167,12 +149,13 @@ body.light .theme-btn:hover {
 
   .nav-links {
     position: absolute;
-    top: 70px;
+    top: 100px;
     right: 0;
     background-color: var(--nav-bg);
     flex-direction: column;
-    align-items: flex-end;
+    align-items: flex-start;
     width: 100%;
+    max-width: 300px;
     max-height: 0;
     overflow: hidden;
     padding: 1rem 2rem;
@@ -184,6 +167,7 @@ body.light .theme-btn:hover {
     display: flex;
     max-height: 300px; /* or whatever height fits your nav links */
     padding: 1rem 2rem;
+    overflow-y: auto;
   }
 
   .nav-links a,
@@ -194,7 +178,7 @@ body.light .theme-btn:hover {
   }
 
   body.light .nav-links {
-    background-color: #e0e0e0;
+    background-color: var(--nav-bg);
   }
 }
 
