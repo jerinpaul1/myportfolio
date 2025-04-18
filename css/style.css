@@ -71,6 +71,13 @@ nav {
   background-color: var(--link-hover);
 }
 
+/* Right-aligned container for nav links and hamburger */
+.nav-right {
+  display: flex;
+  align-items: center;
+  margin-left: auto;
+  gap: 10px;
+}
 /* Hamburger menu hidden on larger screens */
 .hamburger {
   display: none;
@@ -79,7 +86,8 @@ nav {
   border: none;
   color: white;
   cursor: pointer;
-  margin-left: auto;
+  padding: 8px;
+  border-radius: 5px;
 }
 
 /* Light mode adjustments */
