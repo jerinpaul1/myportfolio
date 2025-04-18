@@ -173,16 +173,16 @@ body.light .theme-btn:hover {
   .nav-links a,
   .theme-btn {
     width: 100%;
-    text-align: left;
+    text-align: right;
     padding: 12px 0;
   }
   body.light .nav-links a,
 body.light .theme-btn {
-  background-color: var(--nav-bg);
+  background-color: #d0d0d0;
 }
 
   body.light .nav-links {
-    background-color: var(--nav-bg);
+    background-color: #ffffff;
   }
 }
 
