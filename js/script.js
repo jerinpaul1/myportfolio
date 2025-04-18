@@ -24,10 +24,11 @@ function setupNavbarFunctions() {
 
   // Hamburger menu toggle
   if (hamburger && navLinks) {
-    hamburger.addEventListener('click', () => {
-      navLinks.classList.toggle('show');
-    });
-  }
+  hamburger.addEventListener('click', () => {
+    navLinks.classList.toggle('show');
+    hamburger.classList.toggle('active');
+  });
+}
 
   function updateLogo(theme) {
     if (logoImg) {
