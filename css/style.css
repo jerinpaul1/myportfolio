@@ -159,12 +159,17 @@ body.light .theme-btn:hover {
     flex-direction: column;
     align-items: flex-start;
     width: 100%;
+    max-height: 0;
+    overflow: hidden;
     padding: 1rem 2rem;
+    transition: max-height 0.3s ease, padding 0.3s ease;
     display: none;
   }
 
   .nav-links.show {
     display: flex;
+    max-height: 300px; /* or whatever height fits your nav links */
+    padding: 1rem 2rem;
   }
 
   .nav-links a,
