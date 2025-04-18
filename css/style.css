@@ -72,7 +72,7 @@ body.light nav {
 body.light .nav-links a,
 .theme-btn {
   color: #0f0f0f;
-  background-color: #e0e0e0;
+  background-color: var(--link-bg);
 }
 
 .nav-links a:hover,
@@ -171,7 +171,7 @@ body.light .theme-btn:hover {
     right: 0;
     background-color: var(--nav-bg);
     flex-direction: column;
-    align-items: flex-start;
+    align-items: flex-end;
     width: 100%;
     max-height: 0;
     overflow: hidden;
