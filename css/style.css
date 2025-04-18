@@ -155,7 +155,7 @@ body.light .theme-btn:hover {
     flex-direction: column;
     align-items: flex-start;
     width: 100%;
-    max-width: 100px;
+    max-width: 300px;
     max-height: 0;
     overflow: hidden;
     padding: 1rem 2rem;
@@ -174,8 +174,8 @@ body.light .theme-btn:hover {
   .nav-links a,
   .theme-btn {
     width: 100%;
-    text-align: right;
-    padding: 12px 10px;
+    text-align: center;
+    padding: 12px 12px;
   }
   body.light .nav-links a,
 body.light .theme-btn {
