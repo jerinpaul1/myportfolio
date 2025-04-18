@@ -161,6 +161,7 @@ body.light .theme-btn:hover {
     padding: 1rem 2rem;
     transition: max-height 0.3s ease, padding 0.3s ease;
     display: none;
+    border-radius: 5px;
   }
 
   .nav-links.show {
@@ -174,7 +175,7 @@ body.light .theme-btn:hover {
   .theme-btn {
     width: 100%;
     text-align: right;
-    padding: 12px 0;
+    padding: 12px 10px;
   }
   body.light .nav-links a,
 body.light .theme-btn {
