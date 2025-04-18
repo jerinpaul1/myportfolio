@@ -81,7 +81,7 @@ body.light .nav-links a,
 }
 body.light .nav-links a:hover,
 .theme-btn:hover {
-  background-color: #cfcfcf;
+  background-color: var(--link-hover);
   color: #007777;
 }
 
