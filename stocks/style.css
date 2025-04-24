@@ -1,123 +1,118 @@
-/* Root theme variables */
+/* Inherit portfolio theme variables */
 :root {
   --bg-dark: #121212;
   --text-dark: #ffffff;
   --bg-light: #f0f0f0;
   --text-light: #000000;
+  --nav-bg: #1e1e1e;
+  --link-bg: #2a2a2a;
+  --link-hover: #444444;
   --accent: #00ffcc;
   --accent-hover: #00ddb5;
-  --card-bg: #1a1a1a;
-  --card-bg-light: #ffffff;
 }
 
-/* Base styles */
+/* Base page */
 body {
   margin: 0;
-  padding: 20px;
   font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
   background-color: var(--bg-dark);
   color: var(--text-dark);
 }
-
 body.light {
   background-color: var(--bg-light);
   color: var(--text-light);
 }
 
-header {
-  text-align: center;
-  margin-bottom: 30px;
+/* Projects section styling */
+.projects {
+  max-width: 1000px;
+  margin: auto;
+  padding: 2rem;
+}
+.fade-in { opacity: 0; animation: fadeIn 1s forwards; }
+.fade-in.delay { animation-delay: 0.5s; }
+@keyframes fadeIn { to { opacity: 1; } }
+
+/* Grid layout */
+.project-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 1.5rem;
+  margin-top: 1.5rem;
 }
 
-header h1 {
-  font-size: 2rem;
-  font-weight: bold;
-  margin: 0;
+/* Card styling */
+.project-card {
+  background: var(--link-bg);
+  padding: 1.5rem;
+  border-radius: 10px;
+  transition: transform 0.3s, background 0.3s;
+}
+.project-card:hover {
+  transform: translateY(-5px);
+  background: var(--link-hover);
+}
+body.light .project-card {
+  background: #ffffff;
+  border: 1px solid #ddd;
+}
+body.light .project-card:hover {
+  background: #f0f0f0;
 }
 
-/* Input Section */
-input[type="text"] {
-  padding: 10px;
-  font-size: 16px;
-  width: 220px;
-  border-radius: 5px;
+/* Inputs & buttons */
+.project-card input[type="text"] {
+  width: calc(100% - 1rem);
+  padding: 0.5rem;
+  font-size: 1rem;
+  margin-bottom: 0.75rem;
   border: none;
-  background-color: #222;
+  border-radius: 5px;
+  background: #222;
   color: #fff;
 }
-
-body.light input[type="text"] {
-  background-color: #f0f0f0;
+body.light .project-card input[type="text"] {
+  background: #f0f0f0;
   color: #000;
 }
-
-button {
-  padding: 10px 15px;
-  font-size: 16px;
-  background-color: var(--accent);
+.project-card button {
+  padding: 0.5rem 1rem;
+  font-size: 1rem;
+  background: var(--accent);
   border: none;
   border-radius: 5px;
   cursor: pointer;
-  color: black;
+  color: #000;
   font-weight: bold;
-  margin-left: 10px;
-  transition: background-color 0.3s ease;
+}
+.project-card button:hover {
+  background: var(--accent-hover);
 }
 
-button:hover {
-  background-color: var(--accent-hover);
+/* Results & spinner */
+#loading-spinner {
+  font-size: 1rem;
+  margin-bottom: 1rem;
 }
-
-/* Result Display Sections */
 #prediction-result,
 #sentiment-analysis {
-  margin-top: 25px;
-  background-color: var(--card-bg);
-  padding: 20px;
-  border-radius: 10px;
-  line-height: 1.6;
+  margin-top: 1rem;
+  line-height: 1.4;
 }
 
-body.light #prediction-result,
-body.light #sentiment-analysis {
-  background-color: var(--card-bg-light);
-  border: 1px solid #ddd;
+/* Chart containers */
+#priceChart, #rsiChart {
+  width: 100% !important;
+  height: 300px !important;
+  margin-top: 1rem;
 }
 
-/* Chart Container */
-#chart-container {
-  margin-top: 30px;
-  background-color: var(--card-bg);
-  padding: 20px;
-  border-radius: 10px;
-  max-width: 100%;
-  overflow-x: auto;
-}
-
-body.light #chart-container {
-  background-color: var(--card-bg-light);
-  border: 1px solid #ddd;
-}
-
-/* Spinner */
-#loading-spinner {
-  margin-top: 20px;
-  font-size: 18px;
-  text-align: center;
-}
-
-/* Responsive Design */
-@media screen and (max-width: 600px) {
-  input[type="text"] {
-    width: 100%;
-    margin-bottom: 10px;
+/* Responsive tweaks */
+@media (max-width: 600px) {
+  .project-grid {
+    grid-template-columns: 1fr;
   }
-
-  button {
-    width: 100%;
-  }
-
-  #chart-container {
-    padding: 10px;
+  #priceChart, #rsiChart {
+    height: 200px !important;
   }
 }
