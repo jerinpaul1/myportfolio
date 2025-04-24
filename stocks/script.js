@@ -1,147 +1,79 @@
-const stockApiKey = "afb90b6c5aad41e7ab69676870f1b49e";  // Twelve Data API Key
-const sentimentApiKey = "pub_8280275c74a335134cf2d747c21a0cef9923f"; // Sentim API Key
+// Using Twelve Data API for real-time stock data
+const apiKey = 'afb90b6c5aad41e7ab69676870f1b49e';
+const stockSymbol = 'AAPL';  // You can change the symbol to any stock you'd like
 
-document.getElementById("fetchBtn").addEventListener("click", () => {
-  const ticker = document.getElementById("ticker").value.toUpperCase();
-  if (!ticker) return alert("Please enter a stock symbol.");
-
-  const outputElement = document.getElementById("output");
-  const loadingElement = document.getElementById("loading");
-  loadingElement.style.display = "block"; // Show loading spinner
-
-  outputElement.innerHTML = `<p>Fetching data for <strong>${ticker}</strong>...</p>`;
-
-  const url = `https://api.twelvedata.com/time_series?symbol=${ticker}&interval=1min&apikey=${stockApiKey}&outputsize=50`;
-
-  fetch(url)
-    .then(response => response.json())
-    .then(data => {
-      loadingElement.style.display = "none"; // Hide loading spinner
-      if (data.status === "error") {
-        outputElement.innerHTML = `<p>Error: ${data.message}</p>`;
-        return;
-      }
-
-      const closes = data.values.map(v => parseFloat(v.close));
-      const labels = data.values.map(v => v.datetime).reverse();
-
-      outputElement.innerHTML = `
-        <h3>${ticker}</h3>
-        <p><strong>Last Updated:</strong> ${data.values[0].datetime}</p>
-        <p><em>Running prediction...</em></p>
-      `;
-
-      // Use a promise to ensure the "Running prediction..." message disappears
-      predictNextPrice(closes).then(predicted => {
-        outputElement.innerHTML = `
-          <h3>${ticker}</h3>
-          <p><strong>Last Updated:</strong> ${data.values[0].datetime}</p>
-          <p><strong>Predicted Next Price:</strong> $${predicted}</p>
-        `;
-
-        // Calculate Indicators
-        const sma5 = calculateSMA(closes, 5);
-        const ema20 = calculateEMA(closes, 20);
-        const rsi14 = calculateRSI(closes, 14);
-
-        outputElement.innerHTML += `
-          <p><strong>5-period SMA:</strong> ${sma5}</p>
-          <p><strong>20-period EMA:</strong> ${ema20}</p>
-          <p><strong>14-period RSI:</strong> ${rsi14}</p>
-        `;
-
-        // Plot the chart
-        drawChart(ticker, labels, closes, predicted, sma5, ema20, rsi14);
-      });
-
-      fetchNewsAndSentiment(ticker);
-    })
-    .catch(err => {
-      loadingElement.style.display = "none"; // Hide loading spinner on error
-      console.error(err);
-      outputElement.innerHTML = `<p>Failed to fetch data.</p>`;
-    });
-});
-
-// Predict next price (basic average prediction)
-function predictNextPrice(closes) {
-  return new Promise((resolve) => {
-    const last5Prices = closes.slice(-5);
-    const predicted = (last5Prices.reduce((a, b) => a + b, 0) / last5Prices.length).toFixed(2);
-    resolve(predicted);
-  });
-}
-
-// Calculate Simple Moving Average (SMA)
-function calculateSMA(data, period) {
-  const sum = data.slice(-period).reduce((acc, val) => acc + val, 0);
-  return (sum / period).toFixed(2);
-}
-
-// Calculate Exponential Moving Average (EMA)
-function calculateEMA(data, period) {
-  let multiplier = 2 / (period + 1);
-  let ema = data.slice(0, period).reduce((acc, val) => acc + val, 0) / period;
-
-  for (let i = period; i < data.length; i++) {
-    ema = (data[i] - ema) * multiplier + ema;
+// Function to fetch stock data from Twelve Data API
+async function fetchStockData() {
+  const url = `https://api.twelvedata.com/time_series?symbol=${stockSymbol}&interval=1h&apikey=${apiKey}`;
+  try {
+    const response = await fetch(url);
+    const data = await response.json();
+    if (data.status === 'ok') {
+      return data.values;
+    } else {
+      throw new Error('Failed to fetch stock data');
+    }
+  } catch (error) {
+    console.error('Error fetching stock data:', error);
+    document.getElementById('prediction-result').textContent = 'Failed to load stock data.';
+    return [];
   }
-  return ema.toFixed(2);
 }
 
-// Calculate Relative Strength Index (RSI)
-function calculateRSI(data, period) {
-  let gains = 0, losses = 0;
-  
-  for (let i = 1; i < period; i++) {
-    const diff = data[i] - data[i - 1];
-    if (diff > 0) gains += diff;
-    else losses -= diff;
+// Machine Learning Model Simulation (Basic Example)
+function generatePrediction(stockData) {
+  if (stockData.length === 0) {
+    return 'Prediction failed due to lack of data.';
   }
-
-  let avgGain = gains / period;
-  let avgLoss = losses / period;
-  let rs = avgGain / avgLoss;
-
-  return (100 - (100 / (1 + rs))).toFixed(2);
+  const latestPrice = parseFloat(stockData[0].close);
+  const randomFactor = Math.random() * 2 - 1;  // Random factor to simulate variability
+  const predictedPrice = latestPrice + randomFactor * latestPrice * 0.05;  // Simulated prediction with +-5% change
+  return `Predicted next price: $${predictedPrice.toFixed(2)}`;
 }
 
-// Draw the stock chart using Chart.js
-function drawChart(ticker, labels, closes, predicted, sma5, ema20, rsi14) {
-  const ctx = document.getElementById('stockChart').getContext('2d');
-  new Chart(ctx, {
+// Fetch stock data and display prediction
+async function displayPrediction() {
+  document.getElementById('loading-spinner').style.display = 'block';
+  const stockData = await fetchStockData();
+  document.getElementById('loading-spinner').style.display = 'none';
+
+  const prediction = generatePrediction(stockData);
+  document.getElementById('prediction-result').textContent = prediction;
+}
+
+// Chart.js for Technical Analysis (Moving Averages)
+function generateChart(stockData) {
+  const labels = stockData.map(item => item.datetime);
+  const closingPrices = stockData.map(item => parseFloat(item.close));
+
+  const ctx = document.getElementById('chart-container').getContext('2d');
+  const chart = new Chart(ctx, {
     type: 'line',
     data: {
-      labels: labels.reverse(),
+      labels: labels,
       datasets: [{
-        label: `${ticker} Price`,
-        data: closes.reverse(),
-        borderColor: '#007bff',
-        fill: false
-      }, {
-        label: `Predicted Next Price`,
-        data: Array(labels.length).fill(predicted),
-        borderColor: '#ff5733',
-        borderDash: [5, 5],
-        fill: false
-      }, {
-        label: `5-period SMA`,
-        data: Array(labels.length).fill(sma5),
-        borderColor: '#28a745',
-        borderDash: [5, 5],
-        fill: false
-      }, {
-        label: `20-period EMA`,
-        data: Array(labels.length).fill(ema20),
-        borderColor: '#ffc107',
-        borderDash: [5, 5],
-        fill: false
+        label: 'Stock Price',
+        data: closingPrices,
+        borderColor: '#00ffcc',
+        fill: false,
+        borderWidth: 2
       }]
     },
     options: {
       responsive: true,
+      plugins: {
+        legend: {
+          display: true
+        }
+      },
       scales: {
-        y: { 
+        x: {
+          ticks: {
+            autoSkip: true,
+            maxTicksLimit: 10
+          }
+        },
+        y: {
           beginAtZero: false
         }
       }
@@ -149,26 +81,11 @@ function drawChart(ticker, labels, closes, predicted, sma5, ema20, rsi14) {
   });
 }
 
-// Fetch news and sentiment analysis
-function fetchNewsAndSentiment(ticker) {
-  const url = `https://newsapi.org/v2/everything?q=${ticker}&apiKey=YOUR_NEWS_API_KEY`;
-  fetch(url)
-    .then(response => response.json())
-    .then(data => {
-      const headlines = data.articles.map(article => article.title).join(" ");
-      analyzeSentiment(headlines);
-    })
-    .catch(err => console.error("Sentiment analysis failed", err));
-}
-
-function analyzeSentiment(text) {
-  const url = `https://api.senitmentapi.com/api/v1/sentiment?apiKey=${sentimentApiKey}&text=${text}`;
-  fetch(url)
-    .then(response => response.json())
-    .then(data => {
-      const sentiment = data.sentiment;
-      console.log("Sentiment: ", sentiment);
-      document.getElementById('output').innerHTML += `<p><strong>Sentiment: ${sentiment}</strong></p>`;
-    })
-    .catch(err => console.error("Sentiment analysis failed", err));
-}
+// Initialize the page by displaying stock data and predictions
+window.onload = async function() {
+  await displayPrediction();
+  const stockData = await fetchStockData();
+  if (stockData.length > 0) {
+    generateChart(stockData);
+  }
+};
