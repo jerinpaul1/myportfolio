@@ -1,4 +1,4 @@
-/* Inherit portfolio theme variables */
+/* === Portfolio Base Theme Variables === */
 :root {
   --bg-dark: #121212;
   --text-dark: #ffffff;
@@ -10,43 +10,48 @@
   --accent-hover: #00ddb5;
 }
 
-/* Base page */
+/* === Base Styles === */
 body {
   margin: 0;
   font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-  background-color: var(--bg-dark);
+  background: var(--bg-dark);
   color: var(--text-dark);
 }
 body.light {
-  background-color: var(--bg-light);
+  background: var(--bg-light);
   color: var(--text-light);
 }
 
 /* Fade-in animation */
-.fade-in { opacity: 0; animation: fadeIn 1s forwards; }
-.fade-in.delay { animation-delay: 0.5s; }
-@keyframes fadeIn { to { opacity: 1; } }
+.fade-in {
+  opacity: 0;
+  animation: fadeIn 1s forwards;
+}
+.fade-in.delay {
+  animation-delay: 0.5s;
+}
+@keyframes fadeIn {
+  to { opacity: 1; }
+}
 
-/* Projects layout */
+/* === Projects Layout === */
 .projects {
   max-width: 1000px;
   margin: auto;
   padding: 2rem;
 }
-
 .project-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(280px,1fr));
   gap: 1.5rem;
-  margin-top: 1.5rem;
 }
 
-/* Card styling */
+/* === Card Styles === */
 .project-card {
   background: var(--link-bg);
   padding: 1.5rem;
   border-radius: 10px;
-  transition: transform 0.3s, background 0.3s;
+  transition: transform .3s, background .3s;
 }
 .project-card:hover {
   transform: translateY(-5px);
@@ -60,36 +65,55 @@ body.light .project-card:hover {
   background: #f0f0f0;
 }
 
-/* Inputs & buttons */
-.project-card input[type="text"] {
-  width: 100%;
-  padding: 0.5rem;
+/* === Combined Input + Results Card Overrides === */
+/* Span two columns and use vertical flex layout */
+.project-card[style*="grid-column"] {
+  display: flex;
+  flex-direction: column;
+}
+
+/* Input section inside combined card */
+.input-section {
+  display: flex;
+  gap: 1rem;
+  margin-bottom: 1rem;
+}
+.input-section input {
+  flex: 1;
+  padding: .5rem;
   font-size: 1rem;
-  margin-bottom: 0.75rem;
   border: none;
   border-radius: 5px;
   background: #222;
   color: #fff;
 }
-body.light .project-card input[type="text"] {
+body.light .input-section input {
   background: #f0f0f0;
   color: #000;
 }
-.project-card button {
-  padding: 0.5rem 1rem;
+.input-section button {
+  flex-shrink: 0;
+  padding: .5rem 1rem;
   font-size: 1rem;
   background: var(--accent);
   border: none;
   border-radius: 5px;
   cursor: pointer;
-  color: #000;
   font-weight: bold;
+  color: #000;
+  transition: background-color .3s ease;
 }
-.project-card button:hover {
+.input-section button:hover {
   background: var(--accent-hover);
 }
 
-/* Results & spinner */
+/* Optional spacing before input */
+.project-card h3 + .input-section {
+  margin-top: .5rem;
+  margin-bottom: 1rem;
+}
+
+/* === Loading Spinner & Results === */
 #loading-spinner {
   font-size: 1rem;
   margin-bottom: 1rem;
@@ -100,7 +124,7 @@ body.light .project-card input[type="text"] {
   line-height: 1.4;
 }
 
-/* Chart containers */
+/* === Charts === */
 #priceChart,
 #rsiChart {
   width: 100% !important;
@@ -108,13 +132,12 @@ body.light .project-card input[type="text"] {
   margin-top: 1rem;
 }
 
-/* Responsive tweaks */
+/* === Responsive === */
 @media (max-width: 600px) {
   .project-grid {
     grid-template-columns: 1fr;
   }
-  #priceChart,
-  #rsiChart {
+  #priceChart, #rsiChart {
     height: 200px !important;
   }
 }
