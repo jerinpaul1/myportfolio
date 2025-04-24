@@ -4,33 +4,32 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Stock Market Predictor</title>
-  <link rel="stylesheet" href="../css/style.css" />
   <link rel="stylesheet" href="style.css" />
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 <body>
   <header>
     <div id="navbar-container"></div>
   </header>
 
-  <main class="projects">
-    <h1 class="fade-in">Stock Market Prediction</h1>
-    <div class="fade-in delay">
-      <div class="project-grid">
-        <div class="project-card">
-          <h3>Real-time Predictions</h3>
-          <p>Get predictions based on real-time stock data, machine learning algorithms, and sentiment analysis.</p>
-          <div id="prediction-result">Loading prediction...</div>
-          <div id="loading-spinner">Running Prediction...</div>
-        </div>
-        <div class="project-card">
-          <h3>Technical Analysis</h3>
-          <div id="chart-container"></div>
-        </div>
-      </div>
+  <main>
+    <h1>Stock Market Prediction</h1>
+    <!-- Input for Stock Symbol -->
+    <div>
+      <label for="stock-symbol">Enter Stock Symbol:</label>
+      <input type="text" id="stock-symbol" placeholder="e.g. AAPL" />
+      <button id="submit-symbol">Get Prediction</button>
     </div>
+    
+    <!-- Prediction and Technical Analysis Section -->
+    <div id="prediction-result">Prediction result will appear here</div>
+    <div id="sentiment-analysis">Sentiment analysis loading...</div>
+    <div id="chart-container"></div>
+    
+    <!-- Loading Spinner -->
+    <div id="loading-spinner" style="display: none;">Running Prediction...</div>
   </main>
 
-  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <script src="script.js"></script>
 </body>
 </html>
