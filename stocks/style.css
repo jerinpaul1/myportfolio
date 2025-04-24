@@ -144,3 +144,18 @@ body.light .input-section input {
     grid-template-columns: 1fr;
   }
 }
+.nav-links {
+  display: none;
+  flex-direction: column;
+  align-items: flex-start;
+  background-color: var(--nav-bg);
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height 0.3s ease;
+}
+
+.nav-links.show {
+  display: flex;
+  max-height: 300px;
+  padding: 1rem 2rem;
+}
