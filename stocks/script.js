@@ -130,3 +130,20 @@ async function fetchSentiment(sym){
     outSent.textContent='Sentiment analysis failed';
   }
 }
+// At the very bottom of stocks/script.js
+
+// THEME SWITCHER: reuse portfolio logic
+const themeToggleBtn = document.getElementById('theme-toggle');
+const rootBody       = document.body;
+
+// 1) On load, apply saved theme if any
+if (localStorage.getItem('theme') === 'light') {
+  rootBody.classList.add('light');
+}
+
+// 2) Toggle on click
+themeToggleBtn.addEventListener('click', () => {
+  const isLight = rootBody.classList.toggle('light');
+  if (isLight) localStorage.setItem('theme', 'light');
+  else        localStorage.removeItem('theme');
+});
