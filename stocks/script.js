@@ -1,4 +1,3 @@
-// Replace with your actual API keys
 const apiKey = 'afb90b6c5aad41e7ab69676870f1b49e';  // Twelve Data API Key
 const sentimentApiKey = 'pub_8280275c74a335134cf2d747c21a0cef9923f';  // Sentiment Analysis API Key
 
@@ -15,28 +14,24 @@ async function fetchStockData(stockSymbol) {
     const response = await fetch(`https://api.twelvedata.com/time_series?symbol=${stockSymbol}&interval=1h&apikey=${apiKey}`);
     const data = await response.json();
 
-    // Show the loading spinner
-    loadingSpinnerElement.style.display = 'block';
-    
-    if (data.status === 'ok') {
-      const stockData = data.values.slice(0, 50); // Get the latest 50 data points
+    loadingSpinnerElement.style.display = 'block';  // Show loading spinner
 
-      // Extract timestamps and closing prices
+    if (data.status === 'ok' && data.values) {
+      const stockData = data.values.slice(0, 50); // Get the latest 50 data points
       const timestamps = stockData.map(item => item.datetime);
       const closePrices = stockData.map(item => parseFloat(item.close));
 
-      // Get predictions from a simple model (here you can improve with machine learning)
+      // Basic prediction logic (can be replaced with ML model)
       const predictedPrice = predictStockPrice(closePrices);
       predictionResultElement.textContent = `Predicted Price: $${predictedPrice.toFixed(2)}`;
 
-      // Perform sentiment analysis on news or social media
+      // Perform sentiment analysis
       await performSentimentAnalysis(stockSymbol);
-
-      // Hide the loading spinner
-      loadingSpinnerElement.style.display = 'none';
 
       // Draw the stock price chart
       drawChart(timestamps, closePrices);
+
+      loadingSpinnerElement.style.display = 'none'; // Hide loading spinner
     } else {
       predictionResultElement.textContent = 'Failed to fetch stock data.';
       loadingSpinnerElement.style.display = 'none';
@@ -51,7 +46,7 @@ async function fetchStockData(stockSymbol) {
 // Function to predict the stock price (basic example)
 function predictStockPrice(prices) {
   const lastPrice = prices[prices.length - 1];
-  return lastPrice * (1 + Math.random() * 0.02 - 0.01); // Random prediction within ±1%
+  return lastPrice * (1 + Math.random() * 0.02 - 0.01);  // Random prediction within ±1%
 }
 
 // Function to draw the stock price chart
@@ -86,7 +81,7 @@ function drawChart(timestamps, closePrices) {
   });
 }
 
-// Function to perform sentiment analysis (basic example)
+// Function to perform sentiment analysis
 async function performSentimentAnalysis(stockSymbol) {
   try {
     const response = await fetch(`https://api.sentimentanalysis.com/news?symbol=${stockSymbol}&apikey=${sentimentApiKey}`);
@@ -113,6 +108,3 @@ submitButton.addEventListener('click', function() {
     alert('Please enter a stock symbol.');
   }
 });
-
-// Initialize with a default stock symbol (optional)
-fetchStockData('AAPL');
