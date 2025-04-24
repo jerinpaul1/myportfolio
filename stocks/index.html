@@ -9,24 +9,20 @@
 </head>
 <body>
   <header>
-    <div id="navbar-container"></div>
+    <h1>Stock Market Prediction</h1>
   </header>
 
   <main>
-    <h1>Stock Market Prediction</h1>
-    <!-- Input for Stock Symbol -->
     <div>
       <label for="stock-symbol">Enter Stock Symbol:</label>
       <input type="text" id="stock-symbol" placeholder="e.g. AAPL" />
       <button id="submit-symbol">Get Prediction</button>
     </div>
     
-    <!-- Prediction and Technical Analysis Section -->
-    <div id="prediction-result">Prediction result will appear here</div>
-    <div id="sentiment-analysis">Sentiment analysis loading...</div>
+    <div id="prediction-result">Prediction will appear here</div>
+    <div id="sentiment-analysis">Sentiment analysis will appear here</div>
     <div id="chart-container"></div>
-    
-    <!-- Loading Spinner -->
+
     <div id="loading-spinner" style="display: none;">Running Prediction...</div>
   </main>
 
