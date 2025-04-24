@@ -4,7 +4,6 @@
   --text-dark: #ffffff;
   --bg-light: #f0f0f0;
   --text-light: #000000;
-  --nav-bg: #1e1e1e;
   --link-bg: #2a2a2a;
   --link-hover: #444444;
   --accent: #00ffcc;
@@ -23,17 +22,18 @@ body.light {
   color: var(--text-light);
 }
 
-/* Projects section styling */
+/* Fade-in animation */
+.fade-in { opacity: 0; animation: fadeIn 1s forwards; }
+.fade-in.delay { animation-delay: 0.5s; }
+@keyframes fadeIn { to { opacity: 1; } }
+
+/* Projects layout */
 .projects {
   max-width: 1000px;
   margin: auto;
   padding: 2rem;
 }
-.fade-in { opacity: 0; animation: fadeIn 1s forwards; }
-.fade-in.delay { animation-delay: 0.5s; }
-@keyframes fadeIn { to { opacity: 1; } }
 
-/* Grid layout */
 .project-grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
@@ -62,7 +62,7 @@ body.light .project-card:hover {
 
 /* Inputs & buttons */
 .project-card input[type="text"] {
-  width: calc(100% - 1rem);
+  width: 100%;
   padding: 0.5rem;
   font-size: 1rem;
   margin-bottom: 0.75rem;
@@ -101,7 +101,8 @@ body.light .project-card input[type="text"] {
 }
 
 /* Chart containers */
-#priceChart, #rsiChart {
+#priceChart,
+#rsiChart {
   width: 100% !important;
   height: 300px !important;
   margin-top: 1rem;
@@ -112,7 +113,8 @@ body.light .project-card input[type="text"] {
   .project-grid {
     grid-template-columns: 1fr;
   }
-  #priceChart, #rsiChart {
+  #priceChart,
+  #rsiChart {
     height: 200px !important;
   }
 }
