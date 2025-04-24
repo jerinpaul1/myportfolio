@@ -4,14 +4,15 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Stock Market Predictor</title>
-  <!-- Portfolio theme CSS -->
+  <!-- Portfolio main CSS -->
   <link rel="stylesheet" href="../css/style.css" />
-  <!-- App-specific overrides -->
+  <!-- This app’s overrides -->
   <link rel="stylesheet" href="style.css" />
-  <!-- Chart.js for charts -->
+  <!-- Chart.js library -->
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 <body>
+  <!-- NAVBAR -->
   <header>
     <div id="navbar-container"></div>
   </header>
@@ -20,9 +21,10 @@
     <h1 class="fade-in">Stock Market Predictor</h1>
     <div class="fade-in delay">
       <div class="project-grid">
-        <!-- Stock Input Card -->
+
+        <!-- Input Card -->
         <div class="project-card">
-          <h3>Enter Symbol</h3>
+          <h3>Enter Stock Symbol</h3>
           <input type="text" id="stock-symbol" placeholder="e.g. AAPL" />
           <button id="submit-symbol">Submit</button>
         </div>
@@ -35,16 +37,20 @@
           <div id="sentiment-analysis"></div>
         </div>
 
-        <!-- Chart Card -->
+        <!-- Charts Card (spans two columns) -->
         <div class="project-card" style="grid-column: span 2;">
           <h3>Price & Indicators</h3>
           <canvas id="priceChart"></canvas>
           <canvas id="rsiChart"></canvas>
         </div>
+
       </div>
     </div>
   </main>
-<script src="../js/load-navbar.js"></script>
+
+  <!-- Load portfolio navbar script -->
+  <script src="../js/load-navbar.js"></script>
+  <!-- App logic -->
   <script src="script.js"></script>
 </body>
 </html>
