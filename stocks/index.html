@@ -19,15 +19,13 @@
     <h1 class="fade-in">Stock Market Predictor</h1>
     <div class="fade-in delay">
       <div class="project-grid">
-        <!-- Input card -->
-        <div class="project-card">
-          <h3>Enter Symbol</h3>
-          <input id="stock-symbol" type="text" placeholder="e.g. AAPL">
-          <button id="submit-symbol">Submit</button>
-        </div>
-        <!-- Results card -->
-        <div class="project-card">
-          <h3>Results</h3>
+        <!-- Combined Input + Results Card -->
+        <div class="project-card" style="grid-column: span 2;">
+          <h3>Query & Results</h3>
+          <div class="input-section">
+            <input id="stock-symbol" type="text" placeholder="e.g. AAPL"/>
+            <button id="submit-symbol">Submit</button>
+          </div>
           <div id="loading-spinner">Loading…</div>
           <div id="prediction-result"></div>
           <div id="sentiment-analysis"></div>
