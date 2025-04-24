@@ -152,26 +152,4 @@ themeToggleBtn.addEventListener('click', () => {
     localStorage.removeItem('theme');
     logoImg.src = '../assets/images/logo-dark.png';
   }
-});// Theme toggle + logo swap
-const themeToggleBtn = document.getElementById('theme-toggle');
-const logoImg        = document.getElementById('logo-img');
-const bodyEl         = document.body;
-
-// On load, apply saved theme and set logo
-if (localStorage.getItem('theme') === 'light') {
-  bodyEl.classList.add('light');
-  logoImg.src = '../assets/images/logo-light.png';
-}
-
-// On click, toggle theme class AND swap logo src
-themeToggleBtn.addEventListener('click', () => {
-  const isLight = bodyEl.classList.toggle('light');
-
-  if (isLight) {
-    localStorage.setItem('theme', 'light');
-    logoImg.src = '../assets/images/logo-light.png';
-  } else {
-    localStorage.removeItem('theme');
-    logoImg.src = '../assets/images/logo-dark.png';
-  }
 });
