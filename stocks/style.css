@@ -1,122 +1,60 @@
-/* Reset some basic styles */
-* {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
+/* Custom styles for the stock market app page */
+.project-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 2rem;
+  margin-top: 2rem;
+  padding: 0 2rem;
 }
 
-body {
-    font-family: 'Roboto', sans-serif;
-    background-color: #f8f9fa;
-    color: #333;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    height: 100vh;
-    margin: 0;
+.project-card {
+  background: #1a1a1a;
+  padding: 1rem;
+  border-radius: 10px;
+  transition: transform 0.3s, background 0.3s;
+  text-align: left;
 }
 
-.container {
-    background: #fff;
-    border-radius: 10px;
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-    width: 90%;
-    max-width: 800px;
-    padding: 20px;
+body.light .project-card {
+  background: #ffffff;
+  border: 1px solid #ddd;
 }
 
-header {
-    text-align: center;
-    margin-bottom: 20px;
+.project-card:hover {
+  transform: translateY(-5px);
 }
 
-header h1 {
-    font-size: 2.5em;
-    color: #007bff;
+.project-card h3 {
+  font-size: 1.5rem;
+  color: #00ffcc;
+  margin-bottom: 1rem;
 }
 
-header p {
-    color: #6c757d;
-    font-size: 1.2em;
+.project-card p {
+  color: #fff;
 }
 
-.input-section {
-    display: flex;
-    justify-content: center;
-    margin-bottom: 20px;
+body.light .project-card p {
+  color: #0f0f0f;
 }
 
-#ticker {
-    padding: 10px;
-    font-size: 1em;
-    width: 60%;
-    border: 2px solid #007bff;
-    border-radius: 5px;
-    margin-right: 10px;
+#prediction-result {
+  margin-top: 1rem;
+  font-size: 1.2rem;
+  color: #00ffcc;
 }
 
-#fetchBtn {
-    padding: 10px 20px;
-    background-color: #007bff;
-    color: white;
-    border: none;
-    border-radius: 5px;
-    font-size: 1.1em;
-    cursor: pointer;
+#loading-spinner {
+  color: #f0f0f0;
+  font-size: 1.2rem;
+  font-weight: bold;
 }
 
-#fetchBtn:hover {
-    background-color: #0056b3;
+#chart-container {
+  width: 100%;
+  height: 300px;
 }
 
-.output-section {
-    margin-top: 30px;
-    padding: 10px;
-    text-align: center;
-}
-
-#loading {
-    display: none;
-    text-align: center;
-}
-
-.loading-spinner {
-    border: 4px solid #f3f3f3;
-    border-top: 4px solid #007bff;
-    border-radius: 50%;
-    width: 40px;
-    height: 40px;
-    animation: spin 1s linear infinite;
-}
-
-@keyframes spin {
-    0% { transform: rotate(0deg); }
-    100% { transform: rotate(360deg); }
-}
-
-h4 {
-    font-size: 1.3em;
-    color: #333;
-    margin-top: 10px;
-}
-
-ul {
-    list-style: none;
-    padding: 0;
-}
-
-ul li {
-    font-size: 1em;
-    color: #007bff;
-}
-
-p {
-    font-size: 1.1em;
-    margin: 10px 0;
-}
-
-canvas {
-    margin-top: 20px;
-    width: 100%;
-    height: 400px;
+body.light #prediction-result {
+  color: #007777;
 }
