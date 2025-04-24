@@ -22,12 +22,19 @@ body.light {
   color: var(--text-light);
 }
 
-/* Fade-in */
-.fade-in { opacity: 0; animation: fadeIn 1s forwards; }
-.fade-in.delay { animation-delay: .5s; }
-@keyframes fadeIn { to { opacity: 1; } }
+/* Fade-in animation */
+.fade-in {
+  opacity: 0;
+  animation: fadeIn 1s forwards;
+}
+.fade-in.delay {
+  animation-delay: 0.5s;
+}
+@keyframes fadeIn {
+  to { opacity: 1; }
+}
 
-/* Layout */
+/* === Projects Layout === */
 .projects {
   max-width: 1000px;
   margin: auto;
@@ -35,30 +42,31 @@ body.light {
 }
 .project-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(280px,1fr));
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
   gap: 1.5rem;
 }
 
-/* Cards */
+/* === Card Styles === */
 .project-card {
   background: var(--link-bg);
   padding: 1.5rem;
   border-radius: 10px;
-  transition: transform .3s, background .3s;
+  transition: transform 0.3s, background 0.3s;
 }
 .project-card:hover {
   transform: translateY(-5px);
   background: var(--link-hover);
 }
 body.light .project-card {
-  background: #fff;
+  background: #ffffff;
   border: 1px solid #ddd;
 }
 body.light .project-card:hover {
   background: #f0f0f0;
 }
 
-/* Combined Input + Results Card */
+/* === Combined Input + Results Card === */
+/* Span two columns and use flex layout */
 .project-card[style*="grid-column"] {
   display: flex;
   flex-direction: column;
@@ -72,7 +80,7 @@ body.light .project-card:hover {
 }
 .input-section input {
   flex: 1;
-  padding: .5rem;
+  padding: 0.5rem;
   font-size: 1rem;
   border: none;
   border-radius: 5px;
@@ -84,7 +92,7 @@ body.light .input-section input {
   color: #000;
 }
 .input-section button {
-  padding: .5rem 1rem;
+  padding: 0.5rem 1rem;
   font-size: 1rem;
   background: var(--accent);
   border: none;
@@ -92,13 +100,19 @@ body.light .input-section input {
   cursor: pointer;
   font-weight: bold;
   color: #000;
-  transition: background-color .3s;
+  transition: background-color 0.3s ease;
 }
 .input-section button:hover {
   background: var(--accent-hover);
 }
 
-/* Results */
+/* Optional spacing before input */
+.project-card h3 + .input-section {
+  margin-top: 0.5rem;
+  margin-bottom: 1rem;
+}
+
+/* === Results & Spinner === */
 #loading-spinner {
   font-size: 1rem;
   margin-bottom: 1rem;
@@ -118,14 +132,14 @@ body.light .input-section input {
   max-height: 400px;
   margin-top: 1rem;
 }
-@media(max-width:600px) {
+@media (max-width: 600px) {
   .project-card canvas {
     max-height: 250px;
   }
 }
 
-/* Responsive */
-@media(max-width:600px) {
+/* === Responsive Layout === */
+@media (max-width: 600px) {
   .project-grid {
     grid-template-columns: 1fr;
   }
