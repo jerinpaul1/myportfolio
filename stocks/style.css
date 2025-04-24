@@ -1,43 +1,123 @@
+/* Root theme variables */
+:root {
+  --bg-dark: #121212;
+  --text-dark: #ffffff;
+  --bg-light: #f0f0f0;
+  --text-light: #000000;
+  --accent: #00ffcc;
+  --accent-hover: #00ddb5;
+  --card-bg: #1a1a1a;
+  --card-bg-light: #ffffff;
+}
+
+/* Base styles */
 body {
-  font-family: Arial, sans-serif;
-  background-color: #121212;
-  color: #fff;
+  margin: 0;
+  padding: 20px;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  background-color: var(--bg-dark);
+  color: var(--text-dark);
+}
+
+body.light {
+  background-color: var(--bg-light);
+  color: var(--text-light);
+}
+
+header {
   text-align: center;
+  margin-bottom: 30px;
+}
+
+header h1 {
+  font-size: 2rem;
+  font-weight: bold;
   margin: 0;
 }
 
-h1 {
-  margin-top: 20px;
+/* Input Section */
+input[type="text"] {
+  padding: 10px;
+  font-size: 16px;
+  width: 220px;
+  border-radius: 5px;
+  border: none;
+  background-color: #222;
+  color: #fff;
 }
 
-input, button {
-  padding: 10px;
-  margin-top: 20px;
-  font-size: 1rem;
+body.light input[type="text"] {
+  background-color: #f0f0f0;
+  color: #000;
 }
 
 button {
-  background-color: #00ffcc;
+  padding: 10px 15px;
+  font-size: 16px;
+  background-color: var(--accent);
   border: none;
+  border-radius: 5px;
   cursor: pointer;
+  color: black;
+  font-weight: bold;
+  margin-left: 10px;
+  transition: background-color 0.3s ease;
 }
 
 button:hover {
-  background-color: #00ddbb;
+  background-color: var(--accent-hover);
 }
 
+/* Result Display Sections */
+#prediction-result,
+#sentiment-analysis {
+  margin-top: 25px;
+  background-color: var(--card-bg);
+  padding: 20px;
+  border-radius: 10px;
+  line-height: 1.6;
+}
+
+body.light #prediction-result,
+body.light #sentiment-analysis {
+  background-color: var(--card-bg-light);
+  border: 1px solid #ddd;
+}
+
+/* Chart Container */
 #chart-container {
-  margin-top: 40px;
-  height: 400px;
+  margin-top: 30px;
+  background-color: var(--card-bg);
+  padding: 20px;
+  border-radius: 10px;
+  max-width: 100%;
+  overflow-x: auto;
 }
 
-#sentiment-analysis, #prediction-result {
-  margin-top: 20px;
-  font-size: 1.2rem;
+body.light #chart-container {
+  background-color: var(--card-bg-light);
+  border: 1px solid #ddd;
 }
 
+/* Spinner */
 #loading-spinner {
   margin-top: 20px;
-  font-size: 1.5rem;
-  color: #ffcc00;
+  font-size: 18px;
+  text-align: center;
+}
+
+/* Responsive Design */
+@media screen and (max-width: 600px) {
+  input[type="text"] {
+    width: 100%;
+    margin-bottom: 10px;
+  }
+
+  button {
+    width: 100%;
+  }
+
+  #chart-container {
+    padding: 10px;
+  }
 }
