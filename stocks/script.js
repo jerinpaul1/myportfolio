@@ -1,180 +1,331 @@
-const apiKey = 'afb90b6c5aad41e7ab69676870f1b49e';  // Twelve Data API Key
-const sentimentApiKey = 'pub_8280275c74a335134cf2d747c21a0cef9923f';  // Sentiment Analysis API Key
+// ====== CONFIG ======
+const TWELVE_DATA_KEY = 'afb90b6c5aad41e7ab69676870f1b49e';
+const NEWSDATA_KEY    = 'pub_8280275c74a335134cf2d747c21a0cef9923f';
 
-const predictionResultElement = document.getElementById('prediction-result');
-const sentimentElement = document.getElementById('sentiment-analysis');
-const loadingSpinnerElement = document.getElementById('loading-spinner');
-const chartContainerElement = document.getElementById('chart-container');
-const stockSymbolInput = document.getElementById('stock-symbol');
-const submitButton = document.getElementById('submit-symbol');
+// ====== DOM REFS ======
+const symbolIn   = document.getElementById('stock-symbol');
+const btn        = document.getElementById('submit-symbol');
+const outPred    = document.getElementById('prediction-result');
+const outSent    = document.getElementById('sentiment-analysis');
+const spinner    = document.getElementById('loading-spinner');
+const priceCtx   = document.getElementById('priceChart').getContext('2d');
+const rsiCtx     = document.getElementById('rsiChart').getContext('2d');
+let priceChart, rsiChart;
 
-// Function to fetch real-time stock data
-async function fetchStockData(stockSymbol) {
-  try {
-    const response = await fetch(`https://api.twelvedata.com/time_series?symbol=${stockSymbol}&interval=1h&apikey=${apiKey}`);
-    const data = await response.json();
+// ====== EVENT ======
+btn.addEventListener('click', () => {
+  const sym = symbolIn.value.trim().toUpperCase();
+  if (!sym) return alert('Enter a symbol!');
+  fetchAll(sym);
+});
 
-    loadingSpinnerElement.style.display = 'block';  // Show loading spinner
+// ====== MAIN FLOW ======
+async function fetchAll(sym) {
+  spinner.style.display = 'block';
+  outPred.innerHTML = outSent.innerHTML = '';
+  destroyCharts();
 
-    if (data.status === 'ok' && data.values) {
-      const stockData = data.values.slice(0, 50); // Get the latest 50 data points
-      const timestamps = stockData.map(item => item.datetime);
-      const closePrices = stockData.map(item => parseFloat(item.close));
-
-      // Update the timestamp
-      const lastUpdateTime = stockData[0].datetime;
-      predictionResultElement.innerHTML = `Last Updated: ${lastUpdateTime}`;
-
-      // Basic prediction logic (can be replaced with ML model)
-      const predictedPrice = predictStockPrice(closePrices);
-      predictionResultElement.innerHTML += `<br>Predicted Next Price: $${predictedPrice.toFixed(2)}`;
-
-      // Calculate SMA (5-period)
-      const sma5 = calculateSMA(closePrices, 5);
-      predictionResultElement.innerHTML += `<br>5-Period SMA: $${sma5.toFixed(2)} (Simple Moving Average)`;
-
-      // Calculate EMA (20-period)
-      const ema20 = calculateEMA(closePrices, 20);
-      predictionResultElement.innerHTML += `<br>20-Period EMA: $${ema20.toFixed(2)} (Exponential Moving Average)`;
-
-      // Calculate RSI (14-day)
-      const rsi14 = calculateRSI(closePrices, 14);
-      predictionResultElement.innerHTML += `<br>14-Day RSI: ${rsi14.toFixed(2)} (Relative Strength Index)`;
-
-      // Perform sentiment analysis
-      await performSentimentAnalysis(stockSymbol);
-
-      // Draw the stock price chart
-      drawChart(timestamps, closePrices, sma5, ema20, rsi14);
-
-      loadingSpinnerElement.style.display = 'none'; // Hide loading spinner
-    } else {
-      predictionResultElement.textContent = 'Failed to fetch stock data.';
-      loadingSpinnerElement.style.display = 'none';
-    }
-  } catch (error) {
-    predictionResultElement.textContent = 'Error fetching data.';
-    loadingSpinnerElement.style.display = 'none';
-    console.error('Error fetching stock data:', error);
+  // 1) Fetch time series
+  const res = await fetch(
+    `https://api.twelvedata.com/time_series?symbol=${sym}&interval=1h&outputsize=100&apikey=${TWELVE_DATA_KEY}`
+  );
+  const json = await res.json();
+  if (json.status === 'error') {
+    spinner.style.display = 'none';
+    return outPred.textContent = `Error: ${json.message}`;
   }
+  const vals = json.values.reverse(); // oldest→newest
+
+  // 2) Extract arrays
+  const times  = vals.map(v=>v.datetime);
+  const prices = vals.map(v=>+v.close);
+
+  // 3) Last updated & prediction
+  const lastTime  = times[times.length-1];
+  const lastPrice = prices[prices.length-1];
+  const predicted = predictNext(prices);
+  outPred.innerHTML = `
+    <p><strong>Last Updated:</strong> ${lastTime}</p>
+    <p><strong>Predicted Next Price:</strong> $${predicted.toFixed(2)}</p>
+  `;
+
+  // 4) Indicators
+  const sma5  = calcSMA(prices,5);
+  const ema20 = calcEMA(prices,20);
+  const rsi14 = calcRSI(prices,14);
+  outPred.innerHTML += `
+    <p><strong>5-Period SMA:</strong> $${sma5.toFixed(2)}<br>
+       (Simple Moving Average of last 5 closes)</p>
+    <p><strong>20-Period EMA:</strong> $${ema20.toFixed(2)}<br>
+       (Exponentially-weighted avg; recent prices weigh more)</p>
+    <p><strong>14-Day RSI:</strong> ${rsi14.toFixed(2)}<br>
+       (Momentum oscillator: >70 overbought; <30 oversold)</p>
+  `;
+
+  // 5) Sentiment
+  fetchSentiment(sym);
+
+  // 6) Charts
+  drawPriceChart(times, prices, sma5, ema20, predicted);
+  drawRSIChart(times, rsi14);
+
+  spinner.style.display = 'none';
 }
 
-// Function to predict the stock price (basic example)
-function predictStockPrice(prices) {
-  const lastPrice = prices[prices.length - 1];
-  return lastPrice * (1 + Math.random() * 0.02 - 0.01);  // Random prediction within ±1%
+// ====== PREDICTION (weighted average) ======
+function predictNext(arr) {
+  const slice = arr.slice(-5);
+  const w = [0.1,0.15,0.2,0.25,0.3];
+  const sumW = w.reduce((a,b)=>a+b,0);
+  return slice.reduce((s,p,i)=>s + p*w[i],0)/sumW;
 }
 
-// Function to calculate Simple Moving Average (SMA)
-function calculateSMA(prices, period) {
-  const sum = prices.slice(0, period).reduce((acc, price) => acc + price, 0);
-  return sum / period;
+// ====== SMA ======
+function calcSMA(arr,n) {
+  const slice = arr.slice(-n);
+  return slice.reduce((a,b)=>a+b,0)/n;
 }
 
-// Function to calculate Exponential Moving Average (EMA)
-function calculateEMA(prices, period) {
-  const k = 2 / (period + 1);
-  let ema = prices[0]; // Start with the first price
-  for (let i = 1; i < prices.length; i++) {
-    ema = prices[i] * k + ema * (1 - k);
+// ====== EMA ======
+function calcEMA(arr,n) {
+  const k = 2/(n+1);
+  let ema = arr[0];
+  for(let i=1;i<arr.length;i++){
+    ema = arr[i]*k + ema*(1-k);
   }
   return ema;
 }
 
-// Function to calculate Relative Strength Index (RSI)
-function calculateRSI(prices, period) {
-  let gains = 0;
-  let losses = 0;
-
-  for (let i = 1; i < period; i++) {
-    const change = prices[i] - prices[i - 1];
-    if (change > 0) gains += change;
-    else losses -= change;
+// ====== RSI ======
+function calcRSI(arr,n){
+  let gains=0,losses=0;
+  for(let i=1;i<=n;i++){
+    const diff = arr[i]-arr[i-1];
+    if(diff>0) gains+=diff;
+    else losses-=diff;
   }
-
-  const avgGain = gains / period;
-  const avgLoss = losses / period;
-  const rs = avgGain / avgLoss;
-  return 100 - (100 / (1 + rs));
+  const avgG = gains/n, avgL=losses/n;
+  const rs = avgG/avgL;
+  return 100 - (100/(1+rs));
 }
 
-// Function to draw the stock price chart with indicators
-function drawChart(timestamps, closePrices, sma5, ema20, rsi14) {
-  new Chart(chartContainerElement, {
-    type: 'line',
-    data: {
-      labels: timestamps,
-      datasets: [
-        {
-          label: 'Stock Price (USD)',
-          data: closePrices,
-          borderColor: '#00ffcc',
-          backgroundColor: 'rgba(0, 255, 204, 0.2)',
-          borderWidth: 2,
-          fill: true
-        },
-        {
-          label: '5-Period SMA',
-          data: Array(closePrices.length).fill(sma5),
-          borderColor: '#ffcc00',
-          backgroundColor: 'rgba(255, 204, 0, 0.2)',
-          borderWidth: 1,
-          fill: true
-        },
-        {
-          label: '20-Period EMA',
-          data: Array(closePrices.length).fill(ema20),
-          borderColor: '#ff6600',
-          backgroundColor: 'rgba(255, 102, 0, 0.2)',
-          borderWidth: 1,
-          fill: true
-        }
+// ====== CHARTS ======
+function destroyCharts(){
+  if(priceChart) priceChart.destroy();
+  if(rsiChart)   rsiChart.destroy();
+}
+
+function drawPriceChart(labels, data, sma, ema, pred){
+  priceChart = new Chart(priceCtx,{
+    type:'line',
+    data:{
+      labels,
+      datasets:[
+        {label:'Price', data, borderColor:'#00ffcc', fill:false, tension:0.2},
+        {label:'SMA5',  data:Array(data.length).fill(sma), borderColor:'#ffcc00', fill:false},
+        {label:'EMA20', data:Array(data.length).fill(ema), borderColor:'#ff6600', fill:false},
+        {label:'Prediction', data:[...Array(data.length-1).fill(null),pred], 
+         borderColor:'#dd33aa', borderDash:[5,5], fill:false}
       ]
-    },
-    options: {
-      responsive: true,
-      scales: {
-        x: {
-          ticks: {
-            maxRotation: 90,
-            minRotation: 45
-          }
-        },
-        y: {
-          beginAtZero: false
-        }
-      }
     }
   });
-
-  // Also display the RSI chart (optional)
-  // You can add another chart or indicator for RSI below if needed.
 }
 
-// Function to perform sentiment analysis
-async function performSentimentAnalysis(stockSymbol) {
-  try {
-    const response = await fetch(`https://api.sentimentanalysis.com/news?symbol=${stockSymbol}&apikey=${sentimentApiKey}`);
-    const data = await response.json();
-
-    if (data.status === 'ok') {
-      const sentiment = data.sentiment;
-      sentimentElement.textContent = `Sentiment Analysis: ${sentiment}`;
-    } else {
-      sentimentElement.textContent = 'Sentiment analysis failed.';
-    }
-  } catch (error) {
-    sentimentElement.textContent = 'Error performing sentiment analysis.';
-    console.error('Error with sentiment analysis:', error);
-  }
+function drawRSIChart(labels, rsi){
+  rsiChart = new Chart(rsiCtx,{
+    type:'line',
+    data:{
+      labels,
+      datasets:[
+        {label:'RSI14', data:rsi14Data(rsi, labels.length),
+         borderColor:'#33aaff', fill:false}
+      ]
+    },
+    options:{scales:{y:{min:0,max:100}}}
+  });
+}
+function rsi14Data(val,len){
+  // replicate the last RSI over full length so Chart.js can plot
+  return Array(len).fill(typeof val==='number'?val:val[val.length-1]);
 }
 
-// Event listener for input and button
-submitButton.addEventListener('click', function() {
-  const stockSymbol = stockSymbolInput.value.toUpperCase();
-  if (stockSymbol) {
-    fetchStockData(stockSymbol);
-  } else {
-    alert('Please enter a stock symbol.');
+// ====== SENTIMENT ======
+async function fetchSentiment(sym){
+  try{
+    const res = await fetch(
+      `https://newsdata.io/api/1/news?apikey=${NEWSDATA_KEY}&q=${sym}&language=en`
+    );
+    const js = await res.json();
+    const titles = js.results?.slice(0,3).map(r=>r.title)||[];
+    outSent.innerHTML = '<h4>Recent Headlines:</h4><ul>'
+      +titles.map(t=>`<li>${t}</li>`).join('')
+      +'</ul>';
+  }catch(e){
+    outSent.textContent = 'Sentiment analysis failed';
   }
+}// ====== CONFIG ======
+const TWELVE_DATA_KEY = 'afb90b6c5aad41e7ab69676870f1b49e';
+const NEWSDATA_KEY    = 'pub_8280275c74a335134cf2d747c21a0cef9923f';
+
+// ====== DOM REFS ======
+const symbolIn   = document.getElementById('stock-symbol');
+const btn        = document.getElementById('submit-symbol');
+const outPred    = document.getElementById('prediction-result');
+const outSent    = document.getElementById('sentiment-analysis');
+const spinner    = document.getElementById('loading-spinner');
+const priceCtx   = document.getElementById('priceChart').getContext('2d');
+const rsiCtx     = document.getElementById('rsiChart').getContext('2d');
+let priceChart, rsiChart;
+
+// ====== EVENT ======
+btn.addEventListener('click', () => {
+  const sym = symbolIn.value.trim().toUpperCase();
+  if (!sym) return alert('Enter a symbol!');
+  fetchAll(sym);
 });
+
+// ====== MAIN FLOW ======
+async function fetchAll(sym) {
+  spinner.style.display = 'block';
+  outPred.innerHTML = outSent.innerHTML = '';
+  destroyCharts();
+
+  // 1) Fetch time series
+  const res = await fetch(
+    `https://api.twelvedata.com/time_series?symbol=${sym}&interval=1h&outputsize=100&apikey=${TWELVE_DATA_KEY}`
+  );
+  const json = await res.json();
+  if (json.status === 'error') {
+    spinner.style.display = 'none';
+    return outPred.textContent = `Error: ${json.message}`;
+  }
+  const vals = json.values.reverse(); // oldest→newest
+
+  // 2) Extract arrays
+  const times  = vals.map(v=>v.datetime);
+  const prices = vals.map(v=>+v.close);
+
+  // 3) Last updated & prediction
+  const lastTime  = times[times.length-1];
+  const lastPrice = prices[prices.length-1];
+  const predicted = predictNext(prices);
+  outPred.innerHTML = `
+    <p><strong>Last Updated:</strong> ${lastTime}</p>
+    <p><strong>Predicted Next Price:</strong> $${predicted.toFixed(2)}</p>
+  `;
+
+  // 4) Indicators
+  const sma5  = calcSMA(prices,5);
+  const ema20 = calcEMA(prices,20);
+  const rsi14 = calcRSI(prices,14);
+  outPred.innerHTML += `
+    <p><strong>5-Period SMA:</strong> $${sma5.toFixed(2)}<br>
+       (Simple Moving Average of last 5 closes)</p>
+    <p><strong>20-Period EMA:</strong> $${ema20.toFixed(2)}<br>
+       (Exponentially-weighted avg; recent prices weigh more)</p>
+    <p><strong>14-Day RSI:</strong> ${rsi14.toFixed(2)}<br>
+       (Momentum oscillator: >70 overbought; <30 oversold)</p>
+  `;
+
+  // 5) Sentiment
+  fetchSentiment(sym);
+
+  // 6) Charts
+  drawPriceChart(times, prices, sma5, ema20, predicted);
+  drawRSIChart(times, rsi14);
+
+  spinner.style.display = 'none';
+}
+
+// ====== PREDICTION (weighted average) ======
+function predictNext(arr) {
+  const slice = arr.slice(-5);
+  const w = [0.1,0.15,0.2,0.25,0.3];
+  const sumW = w.reduce((a,b)=>a+b,0);
+  return slice.reduce((s,p,i)=>s + p*w[i],0)/sumW;
+}
+
+// ====== SMA ======
+function calcSMA(arr,n) {
+  const slice = arr.slice(-n);
+  return slice.reduce((a,b)=>a+b,0)/n;
+}
+
+// ====== EMA ======
+function calcEMA(arr,n) {
+  const k = 2/(n+1);
+  let ema = arr[0];
+  for(let i=1;i<arr.length;i++){
+    ema = arr[i]*k + ema*(1-k);
+  }
+  return ema;
+}
+
+// ====== RSI ======
+function calcRSI(arr,n){
+  let gains=0,losses=0;
+  for(let i=1;i<=n;i++){
+    const diff = arr[i]-arr[i-1];
+    if(diff>0) gains+=diff;
+    else losses-=diff;
+  }
+  const avgG = gains/n, avgL=losses/n;
+  const rs = avgG/avgL;
+  return 100 - (100/(1+rs));
+}
+
+// ====== CHARTS ======
+function destroyCharts(){
+  if(priceChart) priceChart.destroy();
+  if(rsiChart)   rsiChart.destroy();
+}
+
+function drawPriceChart(labels, data, sma, ema, pred){
+  priceChart = new Chart(priceCtx,{
+    type:'line',
+    data:{
+      labels,
+      datasets:[
+        {label:'Price', data, borderColor:'#00ffcc', fill:false, tension:0.2},
+        {label:'SMA5',  data:Array(data.length).fill(sma), borderColor:'#ffcc00', fill:false},
+        {label:'EMA20', data:Array(data.length).fill(ema), borderColor:'#ff6600', fill:false},
+        {label:'Prediction', data:[...Array(data.length-1).fill(null),pred], 
+         borderColor:'#dd33aa', borderDash:[5,5], fill:false}
+      ]
+    }
+  });
+}
+
+function drawRSIChart(labels, rsi){
+  rsiChart = new Chart(rsiCtx,{
+    type:'line',
+    data:{
+      labels,
+      datasets:[
+        {label:'RSI14', data:rsi14Data(rsi, labels.length),
+         borderColor:'#33aaff', fill:false}
+      ]
+    },
+    options:{scales:{y:{min:0,max:100}}}
+  });
+}
+function rsi14Data(val,len){
+  // replicate the last RSI over full length so Chart.js can plot
+  return Array(len).fill(typeof val==='number'?val:val[val.length-1]);
+}
+
+// ====== SENTIMENT ======
+async function fetchSentiment(sym){
+  try{
+    const res = await fetch(
+      `https://newsdata.io/api/1/news?apikey=${NEWSDATA_KEY}&q=${sym}&language=en`
+    );
+    const js = await res.json();
+    const titles = js.results?.slice(0,3).map(r=>r.title)||[];
+    outSent.innerHTML = '<h4>Recent Headlines:</h4><ul>'
+      +titles.map(t=>`<li>${t}</li>`).join('')
+      +'</ul>';
+  }catch(e){
+    outSent.textContent = 'Sentiment analysis failed';
+  }
+}
