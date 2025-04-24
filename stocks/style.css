@@ -22,19 +22,12 @@ body.light {
   color: var(--text-light);
 }
 
-/* Fade-in animation */
-.fade-in {
-  opacity: 0;
-  animation: fadeIn 1s forwards;
-}
-.fade-in.delay {
-  animation-delay: 0.5s;
-}
-@keyframes fadeIn {
-  to { opacity: 1; }
-}
+/* Fade-in */
+.fade-in { opacity: 0; animation: fadeIn 1s forwards; }
+.fade-in.delay { animation-delay: .5s; }
+@keyframes fadeIn { to { opacity: 1; } }
 
-/* === Projects Layout === */
+/* Layout */
 .projects {
   max-width: 1000px;
   margin: auto;
@@ -46,7 +39,7 @@ body.light {
   gap: 1.5rem;
 }
 
-/* === Card Styles === */
+/* Cards */
 .project-card {
   background: var(--link-bg);
   padding: 1.5rem;
@@ -58,21 +51,20 @@ body.light {
   background: var(--link-hover);
 }
 body.light .project-card {
-  background: #ffffff;
+  background: #fff;
   border: 1px solid #ddd;
 }
 body.light .project-card:hover {
   background: #f0f0f0;
 }
 
-/* === Combined Input + Results Card Overrides === */
-/* Span two columns and use vertical flex layout */
+/* Combined Input + Results Card */
 .project-card[style*="grid-column"] {
   display: flex;
   flex-direction: column;
 }
 
-/* Input section inside combined card */
+/* Input Section */
 .input-section {
   display: flex;
   gap: 1rem;
@@ -92,7 +84,6 @@ body.light .input-section input {
   color: #000;
 }
 .input-section button {
-  flex-shrink: 0;
   padding: .5rem 1rem;
   font-size: 1rem;
   background: var(--accent);
@@ -101,19 +92,13 @@ body.light .input-section input {
   cursor: pointer;
   font-weight: bold;
   color: #000;
-  transition: background-color .3s ease;
+  transition: background-color .3s;
 }
 .input-section button:hover {
   background: var(--accent-hover);
 }
 
-/* Optional spacing before input */
-.project-card h3 + .input-section {
-  margin-top: .5rem;
-  margin-bottom: 1rem;
-}
-
-/* === Loading Spinner & Results === */
+/* Results */
 #loading-spinner {
   font-size: 1rem;
   margin-bottom: 1rem;
@@ -124,20 +109,24 @@ body.light .input-section input {
   line-height: 1.4;
 }
 
-/* === Charts === */
-#priceChart,
-#rsiChart {
+/* === Responsive Chart Styles === */
+/* Make canvas fill its container */
+.project-card canvas {
+  display: block;
   width: 100% !important;
-  height: 300px !important;
+  height: auto !important;
+  max-height: 400px;
   margin-top: 1rem;
 }
+@media(max-width:600px) {
+  .project-card canvas {
+    max-height: 250px;
+  }
+}
 
-/* === Responsive === */
-@media (max-width: 600px) {
+/* Responsive */
+@media(max-width:600px) {
   .project-grid {
     grid-template-columns: 1fr;
-  }
-  #priceChart, #rsiChart {
-    height: 200px !important;
   }
 }
