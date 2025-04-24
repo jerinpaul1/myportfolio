@@ -130,20 +130,48 @@ async function fetchSentiment(sym){
     outSent.textContent='Sentiment analysis failed';
   }
 }
-// At the very bottom of stocks/script.js
-
-// THEME SWITCHER: reuse portfolio logic
+// Theme toggle + logo swap
 const themeToggleBtn = document.getElementById('theme-toggle');
-const rootBody       = document.body;
+const logoImg        = document.getElementById('logo-img');
+const bodyEl         = document.body;
 
-// 1) On load, apply saved theme if any
+// On load, apply saved theme and set logo
 if (localStorage.getItem('theme') === 'light') {
-  rootBody.classList.add('light');
+  bodyEl.classList.add('light');
+  logoImg.src = '../assets/images/logo-light.png';
 }
 
-// 2) Toggle on click
+// On click, toggle theme class AND swap logo src
 themeToggleBtn.addEventListener('click', () => {
-  const isLight = rootBody.classList.toggle('light');
-  if (isLight) localStorage.setItem('theme', 'light');
-  else        localStorage.removeItem('theme');
+  const isLight = bodyEl.classList.toggle('light');
+
+  if (isLight) {
+    localStorage.setItem('theme', 'light');
+    logoImg.src = '../assets/images/logo-light.png';
+  } else {
+    localStorage.removeItem('theme');
+    logoImg.src = '../assets/images/logo-dark.png';
+  }
+});// Theme toggle + logo swap
+const themeToggleBtn = document.getElementById('theme-toggle');
+const logoImg        = document.getElementById('logo-img');
+const bodyEl         = document.body;
+
+// On load, apply saved theme and set logo
+if (localStorage.getItem('theme') === 'light') {
+  bodyEl.classList.add('light');
+  logoImg.src = '../assets/images/logo-light.png';
+}
+
+// On click, toggle theme class AND swap logo src
+themeToggleBtn.addEventListener('click', () => {
+  const isLight = bodyEl.classList.toggle('light');
+
+  if (isLight) {
+    localStorage.setItem('theme', 'light');
+    logoImg.src = '../assets/images/logo-light.png';
+  } else {
+    localStorage.removeItem('theme');
+    logoImg.src = '../assets/images/logo-dark.png';
+  }
 });
