@@ -209,8 +209,8 @@ main {
   grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
   gap: 2rem;
   margin-top: 2rem;
-  width: 90%;        /* Take full width */
-  max-width: 90%;    /* No restriction */
+  width: 100%;        /* Take full width */
+  max-width: 100%;    /* No restriction */
 }
 
 .project-card {
