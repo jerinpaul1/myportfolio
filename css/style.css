@@ -197,7 +197,7 @@ main {
 .content,
 .projects,
 .contact {
-  max-width: 800px;
+  max-width: 80px;
   margin: auto;
   padding: 4rem 2rem;
   text-align: center;
