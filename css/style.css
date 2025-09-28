@@ -202,6 +202,9 @@ main {
   padding: 4rem 2rem;
   text-align: center;
 }
+.content {
+  max-width: 1000px;
+}
 
 /* ===== Project Grid ===== */
 .project-grid {
