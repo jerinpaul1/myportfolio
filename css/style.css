@@ -68,6 +68,7 @@ body.light nav {
   font-size: 1rem;
   border: none;
   cursor: pointer;
+  box-sizing: border-box;
 }
 body.light .nav-links a,
 .theme-btn {
@@ -174,9 +175,11 @@ body.light .theme-btn:hover {
   .nav-links a,
   .theme-btn {
     width: 100%;
-    max-width: 250;
+    max-width: 250px;
     text-align: center;
     padding: 12px 12px;
+    margin: 0; 
+  display: block;
   }
   body.light .nav-links a,
 body.light .theme-btn {
